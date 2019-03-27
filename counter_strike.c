@@ -132,6 +132,7 @@ int main(int argc, char const *argv[])
 		choix 		= welcome(&joueur);
 		joueur.vie 	= 20;
 		ordi.vie 	= 20;
+		
 		if (choix == 0){
 			joueur.arme = ak_47;
 		}
