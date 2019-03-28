@@ -21,9 +21,9 @@ struct Player
 void action(Player *ordi, Player *joueur);
 void iaction(Player *ordi, Player *joueur);
 void act(Player *one, Player *two, int act);
-void tirer(Player *zbeub);
+void tirer(Player *other, Player *self);
 void baisser(Player *zbeub);
-int welcome(Player *joueur);
+void welcome(Player *joueur, Arme ak_47, Arme m4a1_s);
 int end(Player *one, Player *two);
 
 int end(Player *one, Player *two)
@@ -47,17 +47,15 @@ void baisser(Player *zbeub){
 	printf("%s s'est baissé\n", (*zbeub).name);
 }
 
-void act(Player *one, Player *two, int act)
+void act(Player *self, Player *other, int act)
 {
 	if (act == 1){
-		tirer(two);
+		tirer(other, self);
 	}
 
 	if (act == 0){
-		baisser(one);
+		baisser(self);
 	}
-
-	printf("%d %d\n", (*one).vie, (*two).vie);
 }
 
 void action(Player *ordi, Player *joueur)
@@ -74,30 +72,29 @@ void iaction(Player *ordi, Player *joueur)
 	act(ordi, joueur, random);
 }
 
-void tirer(Player *zbeub)
+void tirer(Player *other, Player *self)
 {
 	int nombreMystere = (rand() % (5)) + 1;
 
 	switch (nombreMystere){
 	case 1:
 	case 2:
-		printf("%s à été touché !\n", (*zbeub).name);
-		int random = (rand() % ((*zbeub).arme.max -
-		(*zbeub).arme.min + 1)) + (*zbeub).arme.min;
-		(*zbeub).vie -= random;
+		printf("%s à été touché !\n", (*other).name);
+		int random = (rand() % ((*self).arme.max -	(*self).arme.min + 1)) + (*self).arme.min;
+		(*other).vie -= random;
 		break;
 	case 3:
 	case 4:
-		printf("%s à été raté !\n", (*zbeub).name);
+		printf("%s à été raté !\n", (*other).name);
 		break;
 	case 5:
-		printf("Headshot !\n");
-		(*zbeub).vie = 0;
+		printf("%s s'est pris un headshot !\n");
+		(*other).vie = 0;
 	}
 
 }
 
-int welcome(Player *joueur)
+void welcome(Player *joueur, Arme ak_47, Arme m4a1_s)
 {
 	int choix;
 	char nom[50];
@@ -108,7 +105,14 @@ int welcome(Player *joueur)
 	printf("(0) AK-47  (1) M4A1-S\n>");
 	scanf("%d", &choix);
 	strcpy((*joueur).name, nom);
-	return (choix);
+
+	if (choix == 0){
+			(*joueur).arme = ak_47;
+		}
+
+	if (choix == 1){
+			(*joueur).arme = m4a1_s;
+		}
 }
 
 int main(int argc, char const *argv[])
@@ -119,27 +123,19 @@ int main(int argc, char const *argv[])
 	Arme ak_47;
 	Arme m4a1_s;
 	stop		= 1;
-	ak_47.max 	= 4;
-	ak_47.min 	= 2;
-	m4a1_s.max 	= 5;
-	m4a1_s.min 	= 1;
-	ordi.arme 	= ak_47;
 	strcpy(ordi.name, "L'ordi");
 	srand(time(NULL));
 
 	while (1){
 		int choix;
-		choix 		= welcome(&joueur);
+		ak_47.max 	= 4;
+		ak_47.min 	= 2;
+		m4a1_s.max 	= 5;
+		m4a1_s.min 	= 1;
 		joueur.vie 	= 20;
 		ordi.vie 	= 20;
-		
-		if (choix == 0){
-			joueur.arme = ak_47;
-		}
-
-		if (choix == 1){
-			joueur.arme = m4a1_s;
-		}
+		ordi.arme 	= ak_47;
+		welcome(&joueur, ak_47, m4a1_s);
 
 		while (1){
 
